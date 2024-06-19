@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
+using TodoApi.Models;
 
 namespace TodoApi.Controllers
 {
@@ -17,23 +19,23 @@ namespace TodoApi.Controllers
         private const string MOESTUIN_FRUIT_FRAMBOOS = "Moestuin:Fruit:Framboos";
 
         // requires using Microsoft.Extensions.Configuration;
-        private readonly IConfiguration Configuration;
+        private readonly IConfiguration configuration;
         public ConfigController(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.configuration = configuration;
         }
 
         // GET: api/Config
         [HttpGet]
         public async Task<ContentResult> GetConfig()
         {
-            var myKeyValue = Configuration[MY_KEY];
-            var title = Configuration[POSITION_TITLE];
-            var name = Configuration[POSITION_NAME];
-            var defaultLogLevel = Configuration[DEFAULT_LOGLEVEL];
-            var moestuinGroente = Configuration[MOESTUIN_GROENTE_AARDAPPEL];
-            var moestuinFruit = Configuration[MOESTUIN_FRUIT_FRAMBOOS];
-            var horse = Configuration[HORSE];
+            var myKeyValue = configuration[MY_KEY];
+            var title = configuration[POSITION_TITLE];
+            var name = configuration[POSITION_NAME];
+            var defaultLogLevel = configuration[DEFAULT_LOGLEVEL];
+            var moestuinGroente = configuration[MOESTUIN_GROENTE_AARDAPPEL];
+            var moestuinFruit = configuration[MOESTUIN_FRUIT_FRAMBOOS];
+            var horse = configuration[HORSE];
 
             var content = $"{MY_KEY}: {myKeyValue} \n" +
                           $"{POSITION_TITLE}: {title} \n" +

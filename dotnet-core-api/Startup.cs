@@ -30,6 +30,9 @@ namespace TodoApi
             });
 
             services.AddDbContext<TodoContext>(options => options.UseInMemoryDatabase("TodoList"));
+
+            services.AddRazorPages();
+            services.Configure<PositionOptions>(Configuration.GetSection(PositionOptions.Position));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
