@@ -4,7 +4,7 @@ Attempting this tutorial: https://learn.microsoft.com/en-us/azure/app-service/ap
 
 At the time of making it works at https://azuretestappl.azurewebsites.net/swagger/index.html
 
-The next step will be the Azure configuration API (not done yet):
+The next step will be the Azure configuration API:
 
 Trying the Azure App Configuration
 
