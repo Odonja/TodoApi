@@ -11,7 +11,7 @@ namespace TodoApi.Controllers
     public class ConfigController : Controller
     {
         // set the environment variable with: setx AZURE_SERVICE_BUS_CONNECTION_STRING "<the connection string>"
-        private static readonly string? connectionString = Environment.GetEnvironmentVariable("AZURE_SERVICE_BUS_CONNECTION_STRING");
+        private static readonly string connectionString = Environment.GetEnvironmentVariable("AZURE_SERVICE_BUS_CONNECTION_STRING");
         private static readonly string queueName = "configurationqueue";
         private const string MY_KEY = "MyKey";
         private const string POSITION_TITLE = "Position:Title";
