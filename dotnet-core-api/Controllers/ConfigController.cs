@@ -6,16 +6,10 @@ namespace TodoApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ConfigController : Controller
+    public class ConfigController(IConfigService service) : Controller
     {
-
-
         // requires using Microsoft.Extensions.Configuration;
-        private readonly IConfigService service;
-        public ConfigController(IConfigService service)
-        {
-            this.service = service;
-        }
+        private readonly IConfigService service = service;
 
         // GET: api/Config/no-service-bus
         [HttpGet("no-service-bus")]

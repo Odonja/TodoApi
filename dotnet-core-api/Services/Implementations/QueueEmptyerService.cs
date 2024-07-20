@@ -5,16 +5,11 @@ using TodoApi.Services.Interfaces;
 namespace TodoApi.Services.Implementations
 {
 
-    public class QueueEmptyerService : IQueueEmptyerService
+    public class QueueEmptyerService(ServiceBusClient serviceBusClient) : IQueueEmptyerService
     {
         private const string REMOVED = "Removed the following content from the queue:";
-        private readonly ServiceBusClient serviceBusClient;
+        private readonly ServiceBusClient serviceBusClient = serviceBusClient;
         private static readonly string queueName = "configurationqueue";
-
-        public QueueEmptyerService(ServiceBusClient serviceBusClient)
-        {
-            this.serviceBusClient = serviceBusClient;
-        }
         public async Task<string> PleaseDoEmptyQueue()
         {
 
