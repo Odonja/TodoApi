@@ -6,11 +6,17 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using TodoApi.Models;
+using Azure.Messaging.ServiceBus;
+using TodoApi.Services.interfaces;
+using TodoApi.Services.Implementations;
 
 namespace TodoApi
 {
     public class Startup
     {
+        // set the environment variable with: setx AZURE_SERVICE_BUS_CONNECTION_STRING "<the connection string>"
+        private static readonly string? connectionString = Environment.GetEnvironmentVariable("AZURE_SERVICE_BUS_CONNECTION_STRING");
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -22,6 +28,11 @@ namespace TodoApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddSingleton<ServiceBusClient>(new ServiceBusClient(connectionString));
+            services.AddScoped<IConfigService, ConfigService>();
+
+
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
