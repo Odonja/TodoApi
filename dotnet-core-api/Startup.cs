@@ -29,8 +29,17 @@ namespace TodoApi
         {
             services.AddControllers();
 
-            services.AddSingleton<ServiceBusClient>(new ServiceBusClient(connectionString));
-            services.AddScoped<IConfigService, ConfigService>();
+            try
+            {
+                services.AddSingleton<ServiceBusClient>(new ServiceBusClient(connectionString));
+                services.AddScoped<IConfigService, ConfigService>();
+
+            }
+            catch (Exception e)
+            {
+                // to catch any exceptions on the connection string
+                // so atleast the position and todo controller work
+            }
 
 
 
