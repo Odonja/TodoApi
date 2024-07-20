@@ -1,0 +1,23 @@
+using Microsoft.AspNetCore.Mvc;
+using TodoApi.Models;
+using TodoApi.Services.Interfaces;
+
+namespace TodoApi.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class QueueEmptyerController : Controller
+    {
+        private readonly IQueueService service;
+        public QueueEmptyerController(IQueueService service)
+        {
+            this.service = service;
+        }
+
+        [HttpGet]
+        public async Task<string> PurgeQueue()
+        {
+            return await service.PurgeQueue();
+        }
+    }
+}

@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using TodoApi.Models;
 using Azure.Messaging.ServiceBus;
-using TodoApi.Services.interfaces;
+using TodoApi.Services.Interfaces;
 using TodoApi.Services.Implementations;
 
 namespace TodoApi
@@ -33,6 +29,7 @@ namespace TodoApi
             {
                 services.AddSingleton<ServiceBusClient>(new ServiceBusClient(connectionString));
                 services.AddScoped<IConfigService, ConfigService>();
+                services.AddScoped<IQueueEmptyerService, QueueEmptyerService>();
 
             }
             catch (Exception e)

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using TodoApi.Services.interfaces;
+using TodoApi.Models;
+using TodoApi.Services.Interfaces;
 
 namespace TodoApi.Controllers
 {
@@ -26,11 +27,11 @@ namespace TodoApi.Controllers
         }
 
         // GET:  api/Config/use-service-bus
-        [HttpGet("use-service-bus")]
-        public async Task<ContentResult> GetConfigWithServiceBus()
+        [HttpGet("use-service-bus/{field}")]
+        public async Task<ContentResult> GetConfigWithServiceBus(ConfigFields field)
         {
             // await using var client = new ServiceBusClient(connectionString);
-            await service.SendConfigurationOverServiceBus(service.ReadConfigurationFromConfigFile());
+            await service.SendConfigurationOverServiceBus(field);
             string configuration = await service.ReceiveConfigurationFromServiceBus();
 
             return await Task.FromResult(Content(configuration));

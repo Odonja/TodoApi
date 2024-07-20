@@ -1,9 +1,11 @@
-namespace TodoApi.Services.interfaces
+using TodoApi.Models;
+
+namespace TodoApi.Services.Interfaces
 {
     public interface IConfigService
     {
         Task<string> ReceiveConfigurationFromServiceBus();
-        Task SendConfigurationOverServiceBus(string configuration);
+        Task SendConfigurationOverServiceBus(ConfigFields field);
         string ReadConfigurationFromConfigFile();
     }
 }

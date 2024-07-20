@@ -1,59 +1,50 @@
 using Azure.Messaging.ServiceBus;
-using TodoApi.Services.interfaces;
-
+using TodoApi.Models;
+using TodoApi.Services.Interfaces;
 namespace TodoApi.Services.Implementations
 {
-    public class ConfigService : IConfigService
+    public class ConfigService(IConfiguration configuration, ServiceBusClient serviceBusClient) : IConfigService
     {
         private static readonly string queueName = "configurationqueue";
-        private const string MY_KEY = "MyKey";
-        private const string POSITION_TITLE = "Position:Title";
-        private const string POSITION_NAME = "Position:NamE";
-        private const string DEFAULT_LOGLEVEL = "Logging:LogLevel:Default";
-        private const string HORSE = "Horse";
-        private const string MOESTUIN_GROENTE_AARDAPPEL = "Moestuin:Groente:Aardappel";
-        private const string MOESTUIN_FRUIT_FRAMBOOS = "Moestuin:Fruit:Framboos";
 
-        private readonly IConfiguration configuration;
-        private readonly ServiceBusClient serviceBusClient;
-
-        public ConfigService(IConfiguration configuration, ServiceBusClient serviceBusClient)
-        {
-            this.configuration = configuration;
-            this.serviceBusClient = serviceBusClient;
-        }
+        private readonly IConfiguration configuration = configuration;
+        private readonly ServiceBusClient serviceBusClient = serviceBusClient;
 
         public async Task<string> ReceiveConfigurationFromServiceBus()
         {
-            ServiceBusReceiver receiver = serviceBusClient.CreateReceiver(queueName);
-            ServiceBusReceivedMessage receivedConfigurationMessage = await receiver.ReceiveMessageAsync();
-            return receivedConfigurationMessage.Body.ToString();
+            var receiver = serviceBusClient.CreateReceiver(queueName);
+            var receivedConfigurationMessage = await receiver.ReceiveMessageAsync();
+            await receiver.CompleteMessageAsync(receivedConfigurationMessage);
+            var requestedField = receivedConfigurationMessage.Body.ToString();
+            var fieldValue = configuration[requestedField];
+
+            return $"{requestedField}: {fieldValue}";
         }
 
-        public async Task SendConfigurationOverServiceBus(string configuration)
+        public async Task SendConfigurationOverServiceBus(ConfigFields field)
         {
-            ServiceBusSender sender = serviceBusClient.CreateSender(queueName);
-            ServiceBusMessage configurationMessage = new ServiceBusMessage(configuration);
+            var sender = serviceBusClient.CreateSender(queueName);
+            var configurationMessage = new ServiceBusMessage(field.GetValue());
             await sender.SendMessageAsync(configurationMessage);
         }
 
         public string ReadConfigurationFromConfigFile()
         {
-            var myKeyValue = configuration[MY_KEY];
-            var title = configuration[POSITION_TITLE];
-            var name = configuration[POSITION_NAME];
-            var defaultLogLevel = configuration[DEFAULT_LOGLEVEL];
-            var moestuinGroente = configuration[MOESTUIN_GROENTE_AARDAPPEL];
-            var moestuinFruit = configuration[MOESTUIN_FRUIT_FRAMBOOS];
-            var horse = configuration[HORSE];
+            var myKeyValue = configuration[ConfigFields.MY_KEY.GetValue()];
+            var title = configuration[ConfigFields.POSITION_TITLE.GetValue()];
+            var name = configuration[ConfigFields.POSITION_NAME.GetValue()];
+            var defaultLogLevel = configuration[ConfigFields.DEFAULT_LOGLEVEL.GetValue()];
+            var moestuinGroente = configuration[ConfigFields.MOESTUIN_GROENTE_AARDAPPEL.GetValue()];
+            var moestuinFruit = configuration[ConfigFields.MOESTUIN_FRUIT_FRAMBOOS.GetValue()];
+            var horse = configuration[ConfigFields.HORSE.GetValue()];
 
-            var content = $"{MY_KEY}: {myKeyValue} \n" +
-                          $"{POSITION_TITLE}: {title} \n" +
-                          $"{POSITION_NAME}: {name} \n" +
-                          $"{MOESTUIN_GROENTE_AARDAPPEL}: {moestuinGroente} \n" +
-                          $"{MOESTUIN_FRUIT_FRAMBOOS}: {moestuinFruit} \n" +
-                          $"{HORSE}: {horse} \n" +
-                          $"{DEFAULT_LOGLEVEL}: {defaultLogLevel}";
+            var content = $"{ConfigFields.MY_KEY.GetValue()}: {myKeyValue} \n" +
+                          $"{ConfigFields.POSITION_TITLE.GetValue()}: {title} \n" +
+                          $"{ConfigFields.POSITION_NAME.GetValue()}: {name} \n" +
+                          $"{ConfigFields.MOESTUIN_GROENTE_AARDAPPEL.GetValue()}: {moestuinGroente} \n" +
+                          $"{ConfigFields.MOESTUIN_FRUIT_FRAMBOOS.GetValue()}: {moestuinFruit} \n" +
+                          $"{ConfigFields.HORSE.GetValue()}: {horse} \n" +
+                          $"{ConfigFields.DEFAULT_LOGLEVEL.GetValue()}: {defaultLogLevel}";
             return content;
         }
 
